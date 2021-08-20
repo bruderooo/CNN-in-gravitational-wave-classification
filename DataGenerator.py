@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.signal
 from tensorflow import keras
 
 
@@ -8,8 +9,8 @@ class DataGenerator(keras.utils.Sequence):
                  list_IDs,
                  labels,
                  batch_size=256,
-                 dim=(3, 4096),
-                 n_channels=1,
+                 dim=(4096,),
+                 n_channels=3,
                  shuffle=True):
         """Initialization"""
         self.dim = dim
@@ -50,14 +51,24 @@ class DataGenerator(keras.utils.Sequence):
         """Generates data containing batch_size samples"""
         # X : (n_samples, *dim, n_channels)
         # Initialization
-        X = np.empty((self.batch_size, *self.dim))
+        X = np.empty((self.batch_size, *self.dim, self.n_channels))
         y = np.empty(self.batch_size, dtype=int)
 
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            X[i,] = np.load(f"data\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
-            print(X[i].shape)
+            # X[i, ] = np.load(f"data\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy").T
+            x = np.load(f"data\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
+
+            multiplier = [9.044647242705657e-20,
+                          8.374226193192353e-20,
+                          2.202426281781826e-20]
+
+            tmp = []
+            for sig, tims in zip(x, multiplier):
+                tmp.append(scipy.signal.spectrogram(sig / tims, fs=2048)[2])
+
+            X[i,] = np.array(tmp).T
 
             # Store class
             y[i] = self.labels[ID]

@@ -1,61 +1,57 @@
 import numpy as np
 import pandas as pd
 from tensorflow import keras
+from tensorflow.keras import Model
+from tensorflow.keras.layers import BatchNormalization, Input, Dense, MaxPool2D, Flatten, Conv2D
 
 from DataGenerator import DataGenerator
 
 
-def make_model(input_shape):
-    input_layer = keras.layers.Input(input_shape)
+def make_model_spectogram(input_shape):
+    input_layer = Input(input_shape)
 
-    conv1 = keras.layers.Conv1D(filters=512, kernel_size=12)(input_layer)
-    conv1 = keras.layers.BatchNormalization()(conv1)
-    conv1 = keras.layers.ReLU()(conv1)
+    conv = Conv2D(filters=16, kernel_size=(3, 3), padding="same", activation='relu')(input_layer)
+    conv = BatchNormalization()(conv)
+    conv = MaxPool2D((2, 2))(conv)
 
-    conv2 = keras.layers.Conv1D(filters=256, kernel_size=12)(conv1)
-    conv2 = keras.layers.BatchNormalization()(conv2)
-    conv2 = keras.layers.ReLU()(conv2)
+    flatt = Flatten()(conv)
 
-    conv3 = keras.layers.Conv1D(filters=128, kernel_size=12)(conv2)
-    conv3 = keras.layers.BatchNormalization()(conv3)
-    conv3 = keras.layers.ReLU()(conv3)
+    hidden_layer = Dense(64, activation="relu")(flatt)
+    output_layer = Dense(1, activation="sigmoid")(hidden_layer)
 
-    gap = keras.layers.GlobalAveragePooling1D()(conv3)
-
-    output_layer = keras.layers.Dense(128, activation="relu")(gap)
-    output_layer = keras.layers.Dense(1, activation="sigmoid")(output_layer)
-
-    return keras.models.Model(inputs=input_layer, outputs=output_layer)
+    return Model(inputs=input_layer, outputs=output_layer)
 
 
 if __name__ == '__main__':
     df = pd.read_csv('data\\training_labels.csv', sep=',').sample(frac=1).set_index('id')
 
     # TODO to usuń xd
-    df = df.head(5_000)
+    df = df.head(25_000)
 
     *train, validation, test = np.split(df.index.values, 5)
     partition: dict = {'train': np.array(train).flatten(), 'validation': validation, 'test': test}
     labels: dict = df.to_dict()['target']
 
-    params: dict = {'dim': (3, 4096),
+    params: dict = {'dim': (18, 129),
                     'batch_size': 64,
-                    'n_channels': 1,
+                    'n_channels': 3,
                     'shuffle': True}
 
     training_generator: keras.utils.Sequence = DataGenerator(partition['train'], labels, **params)
     validation_generator: keras.utils.Sequence = DataGenerator(partition['validation'], labels, **params)
 
-    model: keras.models.Model = make_model((3, 4096))
+    model: keras.models.Model = make_model_spectogram((18, 129, 3))
     model.compile(
-        optimizer=keras.optimizers.RMSprop(),
+        # Sprawdzone 1, 0.5, 0.2, 0.01, 0.005 narazie słabiutko (za duże)
+        # czas sprawdzić coś innego, zmieniłem parametry kroku
+        optimizer=keras.optimizers.Adam(1e-5),
         loss=keras.losses.BinaryCrossentropy(),
-        metrics=["accuracy"],
+        metrics=["accuracy"]
     )
 
     history = model.fit(
         x=training_generator,
         validation_data=validation_generator,
-        epochs=10,
+        epochs=20000,
         verbose=2,
     )
