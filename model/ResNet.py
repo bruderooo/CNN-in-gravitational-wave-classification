@@ -1,5 +1,5 @@
-from keras import Model
-from keras.layers import Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense
+from tensorflow.keras import Model
+from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense
 
 from model import IdentityBlock
 
