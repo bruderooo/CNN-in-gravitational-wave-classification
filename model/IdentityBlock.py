@@ -1,4 +1,4 @@
-from keras.layers import Conv2D, BatchNormalization, Activation, Add
+from keras.layers import Conv2D, BatchNormalization, Activation, Add, Dropout
 from tensorflow import keras
 
 
@@ -15,6 +15,8 @@ class IdentityBlock(keras.Model):
 
         self.act = Activation('relu')
         self.add = Add()
+
+        self.drop = Dropout(0.1)
 
     def call(self, input_tensor):
         x = self.conv1(input_tensor)

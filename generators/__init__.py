@@ -1,1 +1,1 @@
-from DataGenerator import DataGenerator
+from .DataGenerator import DataGenerator

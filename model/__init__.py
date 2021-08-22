@@ -1,2 +1,2 @@
-from IdentityBlock import IdentityBlock
-from ResNet import ResNet
+from .IdentityBlock import IdentityBlock
+from .ResNet import ResNet

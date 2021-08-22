@@ -49,7 +49,6 @@ class DataGenerator(keras.utils.Sequence):
     def __data_generation(self,
                           list_IDs_temp):
         """Generates data containing batch_size samples"""
-        # X : (n_samples, *dim, n_channels)
         # Initialization
         X = np.empty((self.batch_size, *self.dim, self.n_channels))
         y = np.empty(self.batch_size, dtype=int)
@@ -57,7 +56,6 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            # X[i, ] = np.load(f"data\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy").T
             x = np.load(f"data\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
 
             multiplier = [9.044647242705657e-20,

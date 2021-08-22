@@ -8,7 +8,7 @@ class ResNet(Model):
 
     def __init__(self):
         super(ResNet, self).__init__()
-        self.conv = Conv2D(64, (7, 7), padding='same')
+        self.conv = Conv2D(64, (6, 6), padding='same')
         self.bn = BatchNormalization()
         self.act = Activation('relu')
         self.max_pool = MaxPool2D((3, 3))
