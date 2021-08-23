@@ -13,9 +13,6 @@ class IdentityBlock(keras.Model):
         self.conv2 = Conv2D(filters, kernel_size, padding='same')
         self.bn2 = BatchNormalization()
 
-        self.skip_conv = Conv2D(filters, kernel_size, padding='same')
-        self.bn3 = BatchNormalization()
-
         self.act = Activation('relu')
         self.add = Add()
 
@@ -26,13 +23,8 @@ class IdentityBlock(keras.Model):
 
         x = self.conv2(x)
         x = self.bn2(x)
-        x = self.act(x)
 
-        z = self.skip_conv(input_tensor)
-        z = self.bn3(z)
-        z = self.act(z)
-
-        x = self.add([x, z])
+        x = self.add([x, input_tensor])
         x = self.act(x)
 
         return x

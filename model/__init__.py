@@ -1,2 +1,2 @@
-from .IdentityBlock import IdentityBlock
-from .ResNet import ResNet
+from .resnet.ResNet import ResNet
+from .resnet_multi_branch.ResNeXt import ResNeXt

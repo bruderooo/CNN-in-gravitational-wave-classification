@@ -58,13 +58,21 @@ class DataGenerator(keras.utils.Sequence):
             # Store sample
             x = np.load(f"data\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
 
-            multiplier = [9.044647242705657e-20,
-                          8.374226193192353e-20,
-                          2.202426281781826e-20]
+            multiplier = [
+                9.044647242705657e-20,
+                8.374226193192353e-20,
+                2.202426281781826e-20
+            ]
+
+            mean_ = [
+                5.364163252884116e-27,
+                1.215962445189085e-25,
+                2.3707386590609453e-27
+            ]
 
             tmp = []
-            for sig, tims in zip(x, multiplier):
-                tmp.append(scipy.signal.spectrogram(sig / tims, fs=2048)[2])
+            for sig, minus, tims in zip(x, mean_, multiplier):
+                tmp.append(scipy.signal.spectrogram((sig - minus) / tims, fs=2048)[2])
 
             X[i,] = np.array(tmp).T
 

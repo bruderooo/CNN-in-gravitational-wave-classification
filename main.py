@@ -3,6 +3,7 @@ import pandas as pd
 from tensorflow import keras
 
 from generators import DataGenerator
+from model import ResNeXt
 from model import ResNet
 
 if __name__ == '__main__':
@@ -16,7 +17,7 @@ if __name__ == '__main__':
     labels: dict = df.to_dict()['target']
 
     params: dict = {'dim': (18, 129),
-                    'batch_size': 64,
+                    'batch_size': 128,
                     'n_channels': 3,
                     'shuffle': True}
 
@@ -24,6 +25,7 @@ if __name__ == '__main__':
     validation_generator = DataGenerator(partition['validation'], labels, **params)
 
     # shape = (18, 129, 3)
+    # model: keras.models.Model = ResNeXt()
     model: keras.models.Model = ResNet()
     model.compile(
         optimizer=keras.optimizers.Adam(1e-4),
