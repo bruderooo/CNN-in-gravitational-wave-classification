@@ -7,13 +7,14 @@ from model.resnet_multi_branch import IdentityBlock
 
 class ResNeXt(Model):
 
-    def __init__(self, filters=4, input_size=256):
+    def __init__(self, filters=12, dim=256):
         super(ResNeXt, self).__init__(name='')
-        self.conv = Conv2D(64, (7, 7), padding='same')
+        self.conv = Conv2D(dim, (7, 7), padding='same')
         self.bn = BatchNormalization()
+        self.max_pool = MaxPool2D((3, 3))
 
-        self.identity_columns1a = [IdentityBlock(filters, input_size) for _ in range(32)]
-        self.identity_columns1b = [IdentityBlock(filters, input_size) for _ in range(32)]
+        self.identity_columns1a = [IdentityBlock(filters=filters, output_dim=dim) for _ in range(32)]
+        self.identity_columns1b = [IdentityBlock(filters=filters, output_dim=dim) for _ in range(32)]
 
         self.global_pool = GlobalAveragePooling2D()
         self.classifier = Dense(1, activation='sigmoid')
@@ -26,14 +27,16 @@ class ResNeXt(Model):
         x = self.bn(x)
         x = self.act(x)
         x = self.max_pool(x)
+        skip = x
 
-        tmp = [identity_column(x) for identity_column in self.identity_columns]
-        x = self.add(tmp)
-        x = self.add([x, input_tensor])
+        tmp = [identity_column(skip) for identity_column in self.identity_columns1a]
+        tmp = self.add(tmp)
+        x = self.add([tmp, skip])
 
-        tmp = [identity_column(x) for identity_column in self.identity_columns]
-        x = self.add(tmp)
-        x = self.add([x, input_tensor])
+        skip = x
+        tmp = [identity_column(skip) for identity_column in self.identity_columns1b]
+        tmp = self.add(tmp)
+        x = self.add([tmp, skip])
 
         x = self.global_pool(x)
         x = self.classifier(x)

@@ -1,19 +1,19 @@
-from keras.layers import Conv2D, BatchNormalization, Activation, Add
+from keras.layers import Conv2D, BatchNormalization, Activation
 from tensorflow import keras
 
 
 class IdentityBlock(keras.Model):
 
-    def __init__(self, filters, input_size):
+    def __init__(self, filters, output_dim):
         super(IdentityBlock, self).__init__(name='')
 
-        self.conv1 = Conv2D(filters, 1, padding='same')
+        self.conv1 = Conv2D(filters, (1, 1), padding='same')
         self.bn1 = BatchNormalization()
 
-        self.conv2 = Conv2D(filters, 1, padding='same')
+        self.conv2 = Conv2D(filters, (3, 3), padding='same')
         self.bn2 = BatchNormalization()
 
-        self.conv3 = Conv2D(input_size, 1, padding='same')
+        self.conv3 = Conv2D(output_dim, (1, 1), padding='same')
         self.bn3 = BatchNormalization()
 
         self.act = Activation('relu')

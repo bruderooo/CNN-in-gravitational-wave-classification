@@ -4,7 +4,6 @@ from tensorflow import keras
 
 from generators import DataGenerator
 from model import ResNeXt
-from model import ResNet
 
 if __name__ == '__main__':
     df = pd.read_csv('data\\training_labels.csv', sep=',').sample(frac=1).set_index('id')
@@ -25,8 +24,8 @@ if __name__ == '__main__':
     validation_generator = DataGenerator(partition['validation'], labels, **params)
 
     # shape = (18, 129, 3)
-    # model: keras.models.Model = ResNeXt()
-    model: keras.models.Model = ResNet()
+    model: keras.models.Model = ResNeXt()
+    # model: keras.models.Model = ResNet()
     model.compile(
         optimizer=keras.optimizers.Adam(1e-4),
         loss=keras.losses.BinaryCrossentropy(),
