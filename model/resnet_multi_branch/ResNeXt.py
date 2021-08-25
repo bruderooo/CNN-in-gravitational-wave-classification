@@ -1,20 +1,19 @@
 from keras import Model
-from keras.layers import Add
-from keras.layers import Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense
+from keras.layers import Add, Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense
 
 from model.resnet_multi_branch import IdentityBlock
 
 
 class ResNeXt(Model):
 
-    def __init__(self, filters=12, dim=256):
+    def __init__(self, filters=3, dim=64):
         super(ResNeXt, self).__init__(name='')
-        self.conv = Conv2D(dim, (7, 7), padding='same')
+        self.conv = Conv2D(dim, (2 * filters + 1, 2 * filters + 1), padding='same')
         self.bn = BatchNormalization()
         self.max_pool = MaxPool2D((3, 3))
 
-        self.identity_columns1a = [IdentityBlock(filters=filters, output_dim=dim) for _ in range(32)]
-        self.identity_columns1b = [IdentityBlock(filters=filters, output_dim=dim) for _ in range(32)]
+        self.identity_columns1a = [IdentityBlock(filters=filters, output_dim=dim) for _ in range(16)]
+        self.identity_columns1b = [IdentityBlock(filters=filters, output_dim=dim) for _ in range(16)]
 
         self.global_pool = GlobalAveragePooling2D()
         self.classifier = Dense(1, activation='sigmoid')

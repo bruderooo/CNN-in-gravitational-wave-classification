@@ -1,10 +1,10 @@
-from tensorflow.keras import Model
+from tensorflow import keras
 from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense
 
-from model.resnet import IdentityBlock
+from model.resnet import IdentityBlock, StrideBlock
 
 
-class ResNet(Model):
+class ResNet(keras.Model):
 
     def __init__(self):
         super(ResNet, self).__init__()
@@ -16,7 +16,7 @@ class ResNet(Model):
         self.id1a = IdentityBlock(64, (3, 3))
         self.id1b = IdentityBlock(64, (3, 3))
 
-        self.stride_conv = Conv2D(128, (1, 1), padding='same')
+        self.stride_conv = StrideBlock(128)
 
         self.id2a = IdentityBlock(128, (3, 3))
         self.id2b = IdentityBlock(128, (3, 3))
