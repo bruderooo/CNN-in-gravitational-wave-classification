@@ -1,7 +1,7 @@
 from keras import Model
 from keras.layers import Add, Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense
 
-from model.resnet_multi_branch import IdentityBlock
+from model.resnet_multi_branch import BlocksGroup
 
 
 class ResNeXt(Model):
@@ -12,8 +12,8 @@ class ResNeXt(Model):
         self.bn = BatchNormalization()
         self.max_pool = MaxPool2D((3, 3))
 
-        self.identity_columns1a = [IdentityBlock(filters=filters, output_dim=dim) for _ in range(16)]
-        self.identity_columns1b = [IdentityBlock(filters=filters, output_dim=dim) for _ in range(16)]
+        self.identity_columns1a = BlocksGroup(filters=filters, dim=dim)
+        self.identity_columns1b = BlocksGroup(filters=filters, dim=dim)
 
         self.global_pool = GlobalAveragePooling2D()
         self.classifier = Dense(1, activation='sigmoid')
@@ -21,21 +21,14 @@ class ResNeXt(Model):
         self.act = Activation('relu')
         self.add = Add()
 
-    def call(self, input_tensor):
-        x = self.conv(input_tensor)
+    def call(self, inputs):
+        x = self.conv(inputs)
         x = self.bn(x)
         x = self.act(x)
         x = self.max_pool(x)
-        skip = x
 
-        tmp = [identity_column(skip) for identity_column in self.identity_columns1a]
-        tmp = self.add(tmp)
-        x = self.add([tmp, skip])
-
-        skip = x
-        tmp = [identity_column(skip) for identity_column in self.identity_columns1b]
-        tmp = self.add(tmp)
-        x = self.add([tmp, skip])
+        x = self.identity_columns1a(x)
+        x = self.identity_columns1b(x)
 
         x = self.global_pool(x)
         x = self.classifier(x)
