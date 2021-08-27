@@ -1,5 +1,5 @@
-from keras.layers import Conv2D, BatchNormalization, Activation, Add
 from tensorflow import keras
+from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation, Add
 
 
 class IdentityBlock(keras.Model):

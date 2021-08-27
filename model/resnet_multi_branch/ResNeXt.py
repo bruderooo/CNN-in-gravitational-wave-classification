@@ -1,13 +1,14 @@
-from keras import Model
-from keras.layers import Add, Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense
+from tensorflow import keras
+from tensorflow.keras.layers import (Add, Conv2D, BatchNormalization,
+                                     Activation, MaxPool2D, GlobalAveragePooling2D, Dense)
 
 from model.resnet_multi_branch import BlocksGroup
 
 
-class ResNeXt(Model):
+class ResNeXt(keras.Model):
 
     def __init__(self, filters=3, dim=64):
-        super(ResNeXt, self).__init__(name='')
+        super(ResNeXt, self).__init__()
         self.conv = Conv2D(dim, (2 * filters + 1, 2 * filters + 1), padding='same')
         self.bn = BatchNormalization()
         self.max_pool = MaxPool2D((3, 3))
