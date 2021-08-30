@@ -1,6 +1,7 @@
 from tensorflow import keras
-from tensorflow.keras.layers import (Add, Conv2D, BatchNormalization,
-                                     Activation, MaxPool2D, GlobalAveragePooling2D, Dense)
+from tensorflow.keras.layers import (
+    Add, Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense
+)
 
 from model.resnet_multi_branch import BlocksGroup
 

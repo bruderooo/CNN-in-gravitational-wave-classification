@@ -13,7 +13,7 @@ class BlocksGroup(keras.Model):
         self.add = layers.Add()
 
     def call(self, inputs):
-        x = [identity_column(inputs) for identity_column in self.identity_columns1a]
+        x = [identity_column(inputs) for identity_column in self.identity_columns]
         x = self.add(x)
         x = self.add([x, inputs])
 
