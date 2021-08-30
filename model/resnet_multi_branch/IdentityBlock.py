@@ -18,8 +18,8 @@ class IdentityBlock(keras.Model):
 
         self.act = Activation('relu')
 
-    def call(self, input_tensor):
-        x = self.conv1(input_tensor)
+    def call(self, inputs):
+        x = self.conv1(inputs)
         x = self.bn1(x)
         x = self.act(x)
 

@@ -3,13 +3,13 @@ import pandas as pd
 from tensorflow import keras
 
 from generators import DataGenerator
-from model import ResNet
+from model import ResNeXt
 
 if __name__ == '__main__':
     df = pd.read_csv('data\\training_labels.csv', sep=',').sample(frac=1).set_index('id')
 
     # TODO to usuń xd
-    df = df.head(200_000)
+    df = df.head(10_240)
 
     *train, validation, test = np.split(df.index.values, 5)
     partition: dict = {'train': np.array(train).flatten(), 'validation': validation, 'test': test}
@@ -24,8 +24,8 @@ if __name__ == '__main__':
     validation_generator = DataGenerator(partition['validation'], labels, **params)
 
     # shape = (18, 129, 3)
-    # model: keras.models.Model = ResNeXt()
-    model: keras.models.Model = ResNet()
+    model: keras.models.Model = ResNeXt()
+    # model: keras.models.Model = ResNet()
     model.compile(
         optimizer=keras.optimizers.Adam(1e-4),
         loss=keras.losses.BinaryCrossentropy(),
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     history = model.fit(
         x=training_generator,
         validation_data=validation_generator,
-        epochs=1000,
+        epochs=2500,
         verbose=2,
         callbacks=[keras.callbacks.CSVLogger(
             'log.csv', separator=',', append=False
