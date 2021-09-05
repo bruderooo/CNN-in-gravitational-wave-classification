@@ -9,14 +9,14 @@ if __name__ == '__main__':
     df = pd.read_csv('data\\training_labels.csv', sep=',').sample(frac=1).set_index('id')
 
     # TODO to usuń xd
-    df = df.head(10_240)
+    df = df.head(100_000)
 
     *train, validation, test = np.split(df.index.values, 5)
     partition: dict = {'train': np.array(train).flatten(), 'validation': validation, 'test': test}
     labels: dict = df.to_dict()['target']
 
     params: dict = {'dim': (18, 129),
-                    'batch_size': 512,
+                    'batch_size': 1024,
                     'n_channels': 3,
                     'shuffle': True}
 

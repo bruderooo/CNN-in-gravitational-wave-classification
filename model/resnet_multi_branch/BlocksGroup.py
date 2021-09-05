@@ -4,12 +4,12 @@ from tensorflow.keras import layers
 from model.resnet_multi_branch import IdentityBlock
 
 
-class BlocksGroup(keras.Model):
+class BlocksGroup(keras.layers.Layer):
 
     def __init__(self, filters, dim):
         super(BlocksGroup, self).__init__()
 
-        self.identity_columns = [IdentityBlock(filters=filters, output_dim=dim) for _ in range(16)]
+        self.identity_columns = [IdentityBlock(filters=filters, kernel_size=dim) for _ in range(16)]
         self.add = layers.Add()
 
     def call(self, inputs):

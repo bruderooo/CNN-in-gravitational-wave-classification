@@ -2,7 +2,7 @@ from tensorflow import keras
 from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation
 
 
-class StrideBlock(keras.Model):
+class StrideBlock(keras.layers.Layer):
 
     def __init__(self, filters):
         super(StrideBlock, self).__init__()
@@ -11,8 +11,8 @@ class StrideBlock(keras.Model):
         self.bn = BatchNormalization()
         self.act = Activation('relu')
 
-    def call(self, input_tensor):
-        x = self.conv(input_tensor)
+    def call(self, inputs):
+        x = self.conv(inputs)
         x = self.bn(x)
         x = self.act(x)
 
