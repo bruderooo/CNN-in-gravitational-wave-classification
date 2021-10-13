@@ -55,13 +55,16 @@ class DataGeneratorCQT(keras.utils.Sequence):
     ):
         """Generates data containing batch_size samples"""
         # Initialization
-        X = np.empty((self.batch_size, self.n_channels, *self.dim))
+        # X = np.empty((self.batch_size, self.n_channels, *self.dim))
+        X = np.empty((self.batch_size, *self.dim, self.n_channels))
         y = np.empty(self.batch_size, dtype=int)
 
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            X[i,] = np.load(f"..\\data_spectrogram\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
+            q_transform_array = np.load(f"data_spectrogram\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
+
+            X[i,] = np.transpose(q_transform_array / np.max(q_transform_array))
 
             # Store class
             y[i] = self.labels[ID]
