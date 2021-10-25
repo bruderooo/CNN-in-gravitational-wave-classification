@@ -1,5 +1,4 @@
 import numpy as np
-import scipy.signal
 from tensorflow import keras
 
 
@@ -62,25 +61,9 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            x = np.load(f"data\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
+            x = np.load(f"data\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy").T
 
-            multiplier = [
-                9.044647242705657e-20,
-                8.374226193192353e-20,
-                2.202426281781826e-20
-            ]
-
-            mean_ = [
-                5.364163252884116e-27,
-                1.215962445189085e-25,
-                2.3707386590609453e-27
-            ]
-
-            tmp = []
-            for sig, minus, tims in zip(x, mean_, multiplier):
-                tmp.append(scipy.signal.spectrogram((sig - minus) / tims, fs=2048)[2])
-
-            X[i,] = np.array(tmp).T
+            X[i,] = np.resize(x / np.max(x), (1, 4096, 3))
 
             # Store class
             y[i] = self.labels[ID]
