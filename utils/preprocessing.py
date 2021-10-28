@@ -24,20 +24,26 @@ def spectrogram_casting(transform, record_id: str, part='train'):
 
 
 def change_all_files(labels_csv, part='train'):
-    df = pd.read_csv(labels_csv).head()
+    df = pd.read_csv(labels_csv).head(1)
 
     transform = CQT1992v2(sr=4096, fmin=20, fmax=2048, hop_length=64)
 
     for record_id in tqdm(df.id):
-        tmp = spectrogram_casting(record_id=record_id,
-                                  part=part,
-                                  transform=transform)
+        tmp = spectrogram_casting(
+            record_id=record_id,
+            part=part,
+            transform=transform
+        )
+
         np.save(
             f"..\\data_spectogram_one_signal\\{part}\\{record_id[0]}\\{record_id[1]}\\{record_id[2]}\\{record_id}.npy",
-            tmp)
+            tmp
+        )
 
 
 if __name__ == '__main__':
     change_all_files('..\\data\\training_labels.csv')
-    change_all_files('..\\data\\sample_submission.csv', part='test')
+    # change_all_files('..\\data\\sample_submission.csv', part='test')
     # os.system("shutdown /s /t 1")
+
+# Trzeba zrobić dla pojedynczego sygnału, i nalepiej żeby była większa rozdzielczość

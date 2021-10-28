@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 from tensorflow import keras, distribute
 
-from generators import DataGeneratorCQT
-from model.ConvModelCQT import ConvModel
+from generators import DataGenerator
+from model.ConvModel import ConvModel
 
 checkpoint_dir = "./ckpt"
 if not os.path.exists(checkpoint_dir):
@@ -16,10 +16,12 @@ def make_or_restore_model():
     # Either restore the latest model, or create a fresh one
     # if there is no checkpoint available.
     checkpoints = [checkpoint_dir + "/" + name for name in os.listdir(checkpoint_dir)]
+
     if checkpoints:
         latest_checkpoint = max(checkpoints, key=os.path.getctime)
         print("Restoring from", latest_checkpoint)
         return keras.models.load_model(latest_checkpoint)
+
     print("Creating a new model")
 
     # shape = (193, 81, 1)
@@ -39,13 +41,15 @@ if __name__ == '__main__':
     partition: dict = {'train': np.array(train).flatten(), 'validation': validation}
     labels: dict = df.to_dict()['target']
 
-    params: dict = {'dim': (193, 81),
-                    'batch_size': 8,
-                    'n_channels': 1,
-                    'shuffle': True}
+    params: dict = {
+        'dim': (193, 81),
+        'batch_size': 8,
+        'n_channels': 1,
+        'shuffle': True
+    }
 
-    training_generator = DataGeneratorCQT(partition['train'], labels, **params)
-    validation_generator = DataGeneratorCQT(partition['validation'], labels, **params)
+    training_generator = DataGenerator(partition['train'], labels, **params)
+    validation_generator = DataGenerator(partition['validation'], labels, **params)
 
     strategy = distribute.MirroredStrategy()
 
@@ -57,7 +61,7 @@ if __name__ == '__main__':
     history = model.fit(
         x=training_generator,
         validation_data=validation_generator,
-        epochs=100,
+        epochs=50,
         verbose=1,
         callbacks=[keras.callbacks.ModelCheckpoint(
             filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"

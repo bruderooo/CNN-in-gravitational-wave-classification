@@ -10,7 +10,7 @@ class DataGenerator(keras.utils.Sequence):
             labels,
             batch_size=256,
             dim=(4096,),
-            n_channels=3,
+            n_channels=1,
             shuffle=True
     ):
         """Initialization"""
@@ -55,15 +55,16 @@ class DataGenerator(keras.utils.Sequence):
     ):
         """Generates data containing batch_size samples"""
         # Initialization
+        # X = np.empty((self.batch_size, self.n_channels, *self.dim))
         X = np.empty((self.batch_size, *self.dim, self.n_channels))
         y = np.empty(self.batch_size, dtype=int)
 
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            x = np.load(f"data\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy").T
+            x = np.load(f"data_spectrogram\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
 
-            X[i,] = np.resize(x / np.max(x), (1, 4096, 3))
+            X[i,] = np.transpose(x / np.max(x))
 
             # Store class
             y[i] = self.labels[ID]
