@@ -1,51 +1,65 @@
+import os
+
 import numpy as np
 import pandas as pd
-from tensorflow import keras
+from tensorflow import keras, distribute
 
 from generators import DataGeneratorCQT
-from model import ResNet
+from model.ConvModelCQT import ConvModel
+
+checkpoint_dir = "./ckpt"
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)
+
+
+def make_or_restore_model():
+    # Either restore the latest model, or create a fresh one
+    # if there is no checkpoint available.
+    checkpoints = [checkpoint_dir + "/" + name for name in os.listdir(checkpoint_dir)]
+    if checkpoints:
+        latest_checkpoint = max(checkpoints, key=os.path.getctime)
+        print("Restoring from", latest_checkpoint)
+        return keras.models.load_model(latest_checkpoint)
+    print("Creating a new model")
+
+    # shape = (193, 81, 1)
+    model: keras.models.Model = ConvModel()
+    model.compile(
+        optimizer=keras.optimizers.Adam(1e-4),
+        loss=keras.losses.BinaryCrossentropy(),
+        metrics=["accuracy"]
+    )
+    return model
+
 
 if __name__ == '__main__':
     df = pd.read_csv('data\\training_labels.csv', sep=',').sample(frac=1).set_index('id')
 
-    # TODO to usuń xd
-    # df = df.head(50)
-
-    *train, validation, test = np.split(df.index.values, 5)
-    partition: dict = {'train': np.array(train).flatten(), 'validation': validation, 'test': test}
+    *train, validation = np.split(df.index.values, 5)
+    partition: dict = {'train': np.array(train).flatten(), 'validation': validation}
     labels: dict = df.to_dict()['target']
 
     params: dict = {'dim': (193, 81),
-                    'batch_size': 10,
+                    'batch_size': 8,
                     'n_channels': 1,
                     'shuffle': True}
 
     training_generator = DataGeneratorCQT(partition['train'], labels, **params)
     validation_generator = DataGeneratorCQT(partition['validation'], labels, **params)
 
-    # shape = (193, 81, 1)
-    model: keras.models.Model = ResNet()
-    model.compile(
-        optimizer=keras.optimizers.Adam(1e-4),
-        loss=keras.losses.BinaryCrossentropy(),
-        metrics=["accuracy"]
-    )
+    strategy = distribute.MirroredStrategy()
 
-    checkpoint_filepath = 'tmp/checkpoint'
-    model_checkpoint_callback = keras.callbacks.ModelCheckpoint(
-        filepath=checkpoint_filepath,
-        save_weights_only=True,
-        monitor='val_accuracy',
-        mode='max',
-        save_best_only=True)
-    callback = keras.callbacks.EarlyStopping(monitor='loss', patience=10)
+    # Open a strategy scope and create/restore the model
+    with strategy.scope():
+        # shape = (193, 81, 1)
+        model = make_or_restore_model()
 
     history = model.fit(
         x=training_generator,
         validation_data=validation_generator,
-        epochs=1_000,
-        verbose=2,
-        callbacks=[keras.callbacks.CSVLogger('tmp/log.csv', separator=',', append=False),
-                   model_checkpoint_callback,
-                   callback]
+        epochs=100,
+        verbose=1,
+        callbacks=[keras.callbacks.ModelCheckpoint(
+            filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"
+        )]
     )
