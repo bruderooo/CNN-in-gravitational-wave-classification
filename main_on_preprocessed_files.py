@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 import pandas as pd
-from tensorflow import keras, distribute
+from tensorflow import keras
 
 from generators import DataGenerator
 from model.ConvModel import ConvModel
@@ -27,6 +27,7 @@ def make_or_restore_model():
     # shape = (193, 81, 1)
     model: keras.models.Model = ConvModel()
     model.compile(
+        # TODO Jak nadal będzie źle to zmień krok
         optimizer=keras.optimizers.Adam(1e-4),
         loss=keras.losses.BinaryCrossentropy(),
         metrics=["accuracy"]
@@ -42,8 +43,9 @@ if __name__ == '__main__':
     labels: dict = df.to_dict()['target']
 
     params: dict = {
-        'dim': (193, 81),
-        'batch_size': 8,
+        # 'dim': (193, 81),
+        'dim': (64, 64),
+        'batch_size': 16,
         'n_channels': 1,
         'shuffle': True
     }
@@ -51,12 +53,12 @@ if __name__ == '__main__':
     training_generator = DataGenerator(partition['train'], labels, **params)
     validation_generator = DataGenerator(partition['validation'], labels, **params)
 
-    strategy = distribute.MirroredStrategy()
+    # strategy = distribute.MirroredStrategy()
 
     # Open a strategy scope and create/restore the model
-    with strategy.scope():
-        # shape = (193, 81, 1)
-        model = make_or_restore_model()
+    # with strategy.scope():
+    # shape = (193, 81, 1)
+    model = make_or_restore_model()
 
     history = model.fit(
         x=training_generator,

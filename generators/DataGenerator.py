@@ -62,9 +62,12 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            x = np.load(f"data_spectrogram\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
+            # x = np.load(f"data_spectrogram\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
+            # X[i,] = np.transpose((x - np.mean(x)) / np.max(x))
 
-            X[i,] = np.transpose(x / np.max(x))
+            # To rozwiązanie dla nowego spectogramu
+            x = np.load(f"data_spectogram_one_signal\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
+            X[i,] = (x - np.mean(x)) / np.max(x)
 
             # Store class
             y[i] = self.labels[ID]

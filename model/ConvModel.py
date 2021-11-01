@@ -37,7 +37,7 @@ class ConvModel(keras.Model):
 
         self.output_layer = Dense(1, activation="sigmoid")
 
-        self.drop = Dropout(0.5)
+        self.drop = Dropout(0.2)
 
     def call(self, inputs):
         x = self.conv1(inputs)
