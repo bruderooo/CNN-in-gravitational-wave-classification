@@ -4,7 +4,7 @@ from tensorflow.keras.layers import BatchNormalization, Dense, MaxPool2D, Global
 
 
 class ConvBlock(keras.Model):
-    def __init__(self, filters, kernel_size=(4, 4)):
+    def __init__(self, filters, kernel_size=(3, 3)):
         super(ConvBlock, self).__init__()
 
         self.conv = Conv2D(filters=filters, kernel_size=kernel_size)
@@ -25,7 +25,7 @@ class ConvModel(keras.Model):
     def __init__(self):
         super(ConvModel, self).__init__()
 
-        self.conv1 = ConvBlock(filters=32, kernel_size=(7, 7))
+        self.conv1 = ConvBlock(filters=32, kernel_size=(5, 5))
         self.conv2 = ConvBlock(filters=64)
         self.conv3 = ConvBlock(filters=128)
         self.conv4 = ConvBlock(filters=256)

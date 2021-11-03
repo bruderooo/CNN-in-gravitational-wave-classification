@@ -66,7 +66,7 @@ class DataGenerator(keras.utils.Sequence):
             # X[i,] = np.transpose((x - np.mean(x)) / np.max(x))
 
             # To rozwiązanie dla nowego spectogramu
-            x = np.load(f"data_spectogram_one_signal\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
+            x = np.load(f"data_spectogram_one_signal/train/{ID[0]}/{ID[1]}/{ID[2]}/{ID}.npy")
             X[i,] = (x - np.mean(x)) / np.max(x)
 
             # Store class

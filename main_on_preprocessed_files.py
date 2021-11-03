@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import pandas as pd
+from tensorflow import distribute
 from tensorflow import keras
 
 from generators import DataGenerator
@@ -24,7 +25,6 @@ def make_or_restore_model():
 
     print("Creating a new model")
 
-    # shape = (193, 81, 1)
     model: keras.models.Model = ConvModel()
     model.compile(
         # TODO Jak nadal będzie źle to zmień krok
@@ -36,14 +36,13 @@ def make_or_restore_model():
 
 
 if __name__ == '__main__':
-    df = pd.read_csv('data\\training_labels.csv', sep=',').sample(frac=1).set_index('id')
+    df = pd.read_csv('data/training_labels.csv', sep=',').sample(frac=1).set_index('id')
 
     *train, validation = np.split(df.index.values, 5)
     partition: dict = {'train': np.array(train).flatten(), 'validation': validation}
     labels: dict = df.to_dict()['target']
 
     params: dict = {
-        # 'dim': (193, 81),
         'dim': (64, 64),
         'batch_size': 16,
         'n_channels': 1,
@@ -53,12 +52,11 @@ if __name__ == '__main__':
     training_generator = DataGenerator(partition['train'], labels, **params)
     validation_generator = DataGenerator(partition['validation'], labels, **params)
 
-    # strategy = distribute.MirroredStrategy()
+    strategy = distribute.MirroredStrategy()
 
     # Open a strategy scope and create/restore the model
-    # with strategy.scope():
-    # shape = (193, 81, 1)
-    model = make_or_restore_model()
+    with strategy.scope():
+        model = make_or_restore_model()
 
     history = model.fit(
         x=training_generator,
