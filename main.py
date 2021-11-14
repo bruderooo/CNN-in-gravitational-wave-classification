@@ -2,7 +2,6 @@ import os
 
 import numpy as np
 import pandas as pd
-from tensorflow import distribute
 from tensorflow import keras
 
 from generators import DataGenerator
@@ -51,11 +50,7 @@ if __name__ == '__main__':
     training_generator = DataGenerator(partition['train'], labels, **params)
     validation_generator = DataGenerator(partition['validation'], labels, **params)
 
-    strategy = distribute.MirroredStrategy()
-
-    # Open a strategy scope and create/restore the model
-    with strategy.scope():
-        model = make_or_restore_model()
+    model = make_or_restore_model()
 
     history = model.fit(
         x=training_generator,

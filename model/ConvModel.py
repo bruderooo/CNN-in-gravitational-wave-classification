@@ -1,22 +1,19 @@
 from tensorflow import keras
-from tensorflow.keras.layers import BatchNormalization, Dense, MaxPool2D, GlobalAveragePooling2D, Conv2D, Activation, \
-    Dropout
+from tensorflow.keras.layers import BatchNormalization, Dense, MaxPool2D, GlobalAveragePooling2D, Conv2D, Dropout
 
 
 class ConvBlock(keras.Model):
-    def __init__(self, filters, kernel_size=(3, 3)):
+    def __init__(self, filters, kernel_size=(3, 3), max_pool_size=(2, 2)):
         super(ConvBlock, self).__init__()
 
-        self.conv = Conv2D(filters=filters, kernel_size=kernel_size)
+        self.conv = Conv2D(filters=filters, kernel_size=kernel_size, activation='relu')
         self.batch = BatchNormalization()
-        self.pool = MaxPool2D((2, 2))
-        self.act = Activation('relu')
+        self.pool = MaxPool2D(max_pool_size)
 
     def call(self, inputs):
         x = self.conv(inputs)
         x = self.batch(x)
         x = self.pool(x)
-        x = self.act(x)
         return x
 
 
@@ -25,7 +22,7 @@ class ConvModel(keras.Model):
     def __init__(self):
         super(ConvModel, self).__init__()
 
-        self.conv1 = ConvBlock(filters=32, kernel_size=(5, 5))
+        self.conv1 = ConvBlock(filters=32, kernel_size=(5, 5), max_pool_size=(3, 3))
         self.conv2 = ConvBlock(filters=64)
         self.conv3 = ConvBlock(filters=128)
         self.conv4 = ConvBlock(filters=256)
