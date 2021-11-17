@@ -26,7 +26,7 @@ def make_or_restore_model():
 
     model: keras.models.Model = ConvModel()
     model.compile(
-        optimizer=keras.optimizers.Adam(1e-4),
+        optimizer=keras.optimizers.Adam(2e-4),
         loss=keras.losses.BinaryCrossentropy(),
         metrics=["accuracy"]
     )
@@ -34,15 +34,15 @@ def make_or_restore_model():
 
 
 if __name__ == '__main__':
-    df = pd.read_csv('data/training_labels.csv', sep=',').sample(frac=1).set_index('id')
+    df = pd.read_csv('data_spectogram_one_signal/training_labels.csv', sep=',').sample(frac=1).set_index('id')
 
-    *train, validation = np.split(df.index.values, 5)
+    *train, validation = np.split(df.index.values, 10)
     partition: dict = {'train': np.array(train).flatten(), 'validation': validation}
     labels: dict = df.to_dict()['target']
 
     params: dict = {
         'dim': (64, 64),
-        'batch_size': 64,
+        'batch_size': 512,
         'n_channels': 1,
         'shuffle': True
     }

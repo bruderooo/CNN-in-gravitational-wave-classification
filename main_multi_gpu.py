@@ -35,7 +35,7 @@ def make_or_restore_model():
 
 
 if __name__ == '__main__':
-    df = pd.read_csv('data/training_labels.csv', sep=',').sample(frac=1).set_index('id')
+    df = pd.read_csv('data_spectogram_one_signal/training_labels.csv', sep=',').sample(frac=1).set_index('id')
 
     *train, validation = np.split(df.index.values, 5)
     partition: dict = {'train': np.array(train).flatten(), 'validation': validation}
