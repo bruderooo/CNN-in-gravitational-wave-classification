@@ -19,7 +19,7 @@ class ResNet(keras.Model):
         self.id2a = IdentityBlock(128, (3, 3))
         self.id2b = IdentityBlock(128, (3, 3))
 
-        self.bottleneck1 = BottleneckBlock(256, (3, 3))
+        self.bottleneck2 = BottleneckBlock(256, (3, 3))
         self.id3a = IdentityBlock(256, (3, 3))
         self.id3b = IdentityBlock(256, (3, 3))
 
@@ -52,7 +52,7 @@ class ResNet(keras.Model):
         x = self.id2a(x)
         x = self.id2b(x)
 
-        x = self.bottleneck1(x)
+        x = self.bottleneck2(x)
         x = self.id3a(x)
         x = self.id3b(x)
 
@@ -128,7 +128,7 @@ class BottleneckBlock(keras.layers.Layer):
         self.conv2 = Conv2D(filters, kernel_size, padding='same')
         self.bn2 = BatchNormalization()
 
-        self.conv_add = Conv2D(filters * 2, (1, 1), padding='same')
+        self.conv_add = Conv2D(filters, (1, 1), padding='same')
 
         self.act = Activation('relu')
         self.add = Add()
