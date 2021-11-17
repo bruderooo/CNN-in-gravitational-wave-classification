@@ -70,10 +70,6 @@ class ResNet(keras.Model):
     def get_config(self):
         return {}
 
-    @classmethod
-    def from_config(cls, config):
-        return cls()
-
 
 class IdentityBlock(keras.layers.Layer):
 
@@ -108,13 +104,6 @@ class IdentityBlock(keras.layers.Layer):
             'filters': self.conv1.filters,
             'kernel_size': self.conv1.kernel_size
         }
-
-    @classmethod
-    def from_config(cls, config):
-        return cls(
-            config['filters'],
-            config['kernel_size']
-        )
 
 
 class BottleneckBlock(keras.layers.Layer):
@@ -152,10 +141,3 @@ class BottleneckBlock(keras.layers.Layer):
             'filters': self.conv1.filters,
             'kernel_size': self.conv1.kernel_size
         }
-
-    @classmethod
-    def from_config(cls, config):
-        return cls(
-            config['filters'],
-            config['kernel_size']
-        )

@@ -74,7 +74,3 @@ class ConvModel(keras.Model):
 
     def get_config(self):
         return {}
-
-    @staticmethod
-    def from_config(cls, config):
-        return cls()
