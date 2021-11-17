@@ -16,6 +16,17 @@ class ConvBlock(keras.Model):
         x = self.pool(x)
         return x
 
+    def get_config(self):
+        return {
+            'filters': self.conv.filters,
+            'kernel_size': self.conv.kernel_size,
+            'max_pool_size': self.pool.pool_size
+        }
+
+    @staticmethod
+    def from_config(cls, config):
+        return cls(config['filters'], config['kernel_size'], config['max_pool_size'])
+
 
 class ConvModel(keras.Model):
 
@@ -29,10 +40,16 @@ class ConvModel(keras.Model):
 
         self.flatten = GlobalAveragePooling2D()
 
-        self.hidden_layer1 = Dense(128, activation='relu',
-            kernel_regularizer=keras.regularizers.l2(1e-6))
-        self.hidden_layer2 = Dense(64, activation='relu',
-            kernel_regularizer=keras.regularizers.l2(1e-6))
+        self.hidden_layer1 = Dense(
+            128,
+            activation='relu',
+            kernel_regularizer=keras.regularizers.l2(1e-6)
+        )
+        self.hidden_layer2 = Dense(
+            64,
+            activation='relu',
+            kernel_regularizer=keras.regularizers.l2(1e-6)
+        )
 
         self.output_layer = Dense(1, activation="sigmoid")
 
@@ -54,3 +71,10 @@ class ConvModel(keras.Model):
 
         x = self.output_layer(x)
         return x
+
+    def get_config(self):
+        return {}
+
+    @staticmethod
+    def from_config(cls, config):
+        return cls()
