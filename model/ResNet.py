@@ -31,9 +31,12 @@ class ResNet(keras.Model):
         x = self.classifier(x)
         return x
 
-    def model(self):
-        x = keras.layers.Input(shape=(193, 81, 1))
-        return keras.Model(inputs=[x], outputs=self.call(x))
+    def get_config(self):
+        return {}
+
+    @classmethod
+    def from_config(cls, config):
+        return cls()
 
 
 class IdentityBlock(keras.layers.Layer):
@@ -63,3 +66,13 @@ class IdentityBlock(keras.layers.Layer):
         x = self.act(x)
 
         return x
+
+    def get_config(self):
+        return {
+            'filters': self.conv1.filters,
+            'kernel_size': self.conv1.kernel_size
+        }
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(config['filters'], config['kernel_size'])
