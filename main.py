@@ -5,8 +5,7 @@ import pandas as pd
 from tensorflow import keras
 
 from generators import DataGenerator
-from model.ConvModel import ConvModel
-from model.ResNet import ResNet
+from model.ConvModelSkip import ConvModelSkip
 
 checkpoint_dir = "./ckpt"
 if not os.path.exists(checkpoint_dir):
@@ -25,7 +24,7 @@ def make_or_restore_model():
 
     print("Creating a new model")
 
-    model: keras.models.Model = ResNet()
+    model: keras.models.Model = ConvModelSkip()
     model.compile(
         optimizer=keras.optimizers.Adam(2e-4),
         loss=keras.losses.BinaryCrossentropy(),

@@ -1,18 +1,21 @@
 from tensorflow import keras
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Conv2D, Dropout, Add, MaxPool2D
 
 from model import ConvBlock
 
 
-class ConvModel(keras.Model):
+class ConvModelSkip(keras.Model):
 
     def __init__(self):
-        super(ConvModel, self).__init__()
+        super(ConvModelSkip, self).__init__()
 
         self.conv1 = ConvBlock(filters=32)
         self.conv2 = ConvBlock(filters=64)
         self.conv3 = ConvBlock(filters=128)
         self.conv4 = ConvBlock(filters=256)
+
+        self.conv2_3_skip = Conv2D(filters=64, kernel_size=(1, 1), activation='relu', padding='same')
+        self.max_pool = MaxPool2D((4, 4))
 
         self.flatten = GlobalAveragePooling2D()
 
@@ -30,10 +33,17 @@ class ConvModel(keras.Model):
         self.output_layer = Dense(1, activation="sigmoid")
 
         self.drop = Dropout(0.5)
+        self.add = Add()
 
     def call(self, inputs):
         x = self.conv1(inputs)
         x = self.conv2(x)
+
+        skip = self.conv2_3_skip(inputs)
+        skip = self.max_pool(skip)
+
+        x = self.add([x, skip])
+
         x = self.conv3(x)
         x = self.conv4(x)
 
