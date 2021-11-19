@@ -14,7 +14,7 @@ class ConvModelSkip(keras.Model):
         self.conv3 = ConvBlock(filters=128)
         self.conv4 = ConvBlock(filters=256)
 
-        self.conv2_3_skip = Conv2D(filters=64, kernel_size=(1, 1), activation='relu', padding='same')
+        self.conv2_3_skip = Conv2D(filters=64, kernel_size=(1, 1), padding='same')
         self.max_pool = MaxPool2D((4, 4))
 
         self.flatten = GlobalAveragePooling2D()
