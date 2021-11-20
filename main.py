@@ -6,6 +6,7 @@ from tensorflow import keras
 
 from generators import DataGenerator
 from model import *
+from utils import plot_acc, plot_loss
 
 checkpoint_dir = "./ckpt"
 if not os.path.exists(checkpoint_dir):
@@ -65,3 +66,6 @@ if __name__ == '__main__':
     )
 
     model.summary()
+
+    plot_acc(history)
+    plot_loss(history)
