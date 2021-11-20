@@ -5,7 +5,7 @@ import pandas as pd
 from tensorflow import keras
 
 from generators import DataGenerator
-from model.ConvModelSkip import ConvModelSkip
+from model import *
 
 checkpoint_dir = "./ckpt"
 if not os.path.exists(checkpoint_dir):
@@ -24,9 +24,9 @@ def make_or_restore_model():
 
     print("Creating a new model")
 
-    model: keras.models.Model = ConvModelSkip()
+    model: keras.models.Model = ConvNeuralNet()
     model.compile(
-        optimizer=keras.optimizers.Adam(2e-4),
+        optimizer=keras.optimizers.Adam(1e-4),
         loss=keras.losses.BinaryCrossentropy(),
         metrics=["accuracy"]
     )
@@ -52,6 +52,8 @@ if __name__ == '__main__':
 
     model = make_or_restore_model()
 
+    # model.build(input_shape=(512, 64, 64, 1))
+
     history = model.fit(
         x=training_generator,
         validation_data=validation_generator,
@@ -61,3 +63,5 @@ if __name__ == '__main__':
             filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"
         )]
     )
+
+    model.summary()
