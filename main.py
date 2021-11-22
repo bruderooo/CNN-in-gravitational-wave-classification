@@ -25,7 +25,7 @@ def make_or_restore_model():
 
     print("Creating a new model")
 
-    model: keras.models.Model = ConvNeuralNet()
+    model: keras.models.Model = PaperModel()
     model.compile(
         optimizer=keras.optimizers.Adam(1e-4),
         loss=keras.losses.BinaryCrossentropy(),
@@ -37,13 +37,13 @@ def make_or_restore_model():
 if __name__ == '__main__':
     df = pd.read_csv('data_spectogram_one_signal/training_labels.csv', sep=',').sample(frac=1).set_index('id')
 
-    *train, validation = np.split(df.index.values, 10)
+    *train, validation = np.split(df.index.values, 5)
     partition: dict = {'train': np.array(train).flatten(), 'validation': validation}
     labels: dict = df.to_dict()['target']
 
     params: dict = {
         'dim': (64, 64),
-        'batch_size': 512,
+        'batch_size': 256,
         'n_channels': 1,
         'shuffle': True
     }
@@ -53,7 +53,8 @@ if __name__ == '__main__':
 
     model = make_or_restore_model()
 
-    # model.build(input_shape=(512, 64, 64, 1))
+    model.build(input_shape=(None, *params['dim'], params['n_channels']))
+    model.summary()
 
     history = model.fit(
         x=training_generator,
@@ -64,8 +65,6 @@ if __name__ == '__main__':
             filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"
         )]
     )
-
-    model.summary()
 
     plot_acc(history)
     plot_loss(history)

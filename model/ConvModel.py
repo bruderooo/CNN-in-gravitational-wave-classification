@@ -9,7 +9,7 @@ class ConvModel(keras.Model):
     def __init__(self):
         super(ConvModel, self).__init__()
 
-        self.conv1 = ConvBlock(filters=32)
+        self.conv1 = ConvBlock(filters=32, kernel_size=(5, 5))
         self.conv2 = ConvBlock(filters=64)
         self.conv3 = ConvBlock(filters=128)
         self.conv4 = ConvBlock(filters=256)
