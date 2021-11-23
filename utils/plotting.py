@@ -11,24 +11,14 @@ def plot_acc(history):
     plt.savefig('acc.png')
 
 
-def plot_precision(history):
-    plt.plot(history.history['precision'])
-    plt.plot(history.history['val_precision'])
-    plt.title('model precision')
-    plt.ylabel('precision')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'val'], loc='upper left')
-    plt.savefig('precision.png')
-
-
-def plot_recall(history):
-    plt.plot(history.history['recall'])
-    plt.plot(history.history['val_recall'])
-    plt.title('model recall')
-    plt.ylabel('recall')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'val'], loc='upper left')
-    plt.savefig('recall.png')
+def plot_auc(history):
+    plt.plot(history.history['auc'])
+    plt.plot(history.history['val_auc'])
+    plt.title('model auc')
+    plt.ylabel('true positive rate')
+    plt.xlabel('false positive rate')
+    plt.legend(['train', 'val'], loc='upper right')
+    plt.savefig('auc.png')
 
 
 def plot_loss(history):

@@ -7,7 +7,7 @@ from tensorflow.keras import metrics
 
 from generators import DataGenerator
 from model import *
-from utils import plot_acc, plot_loss
+from utils import plot_acc, plot_loss, plot_auc
 
 checkpoint_dir = "./ckpt"
 if not os.path.exists(checkpoint_dir):
@@ -30,7 +30,7 @@ def make_or_restore_model():
     model.compile(
         optimizer=keras.optimizers.Adam(1e-4),
         loss=keras.losses.BinaryCrossentropy(),
-        metrics=[metrics.BinaryAccuracy(), metrics.Precision(), metrics.Recall()],
+        metrics=[metrics.BinaryAccuracy(), metrics.AUC(name="auc")],
     )
     return model
 
@@ -69,3 +69,4 @@ if __name__ == '__main__':
 
     plot_acc(history)
     plot_loss(history)
+    plot_auc(history)
