@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 from tensorflow import keras
+from tensorflow.keras import metrics
 
 from generators import DataGenerator
 from model import *
@@ -29,7 +30,7 @@ def make_or_restore_model():
     model.compile(
         optimizer=keras.optimizers.Adam(1e-4),
         loss=keras.losses.BinaryCrossentropy(),
-        metrics=["accuracy"]
+        metrics=[metrics.BinaryAccuracy(), metrics.Precision(), metrics.Recall()],
     )
     return model
 
