@@ -26,9 +26,9 @@ def make_or_restore_model():
 
     print("Creating a new model")
 
-    model: keras.models.Model = PaperModel()
+    model: keras.models.Model = ConvModel()
     model.compile(
-        optimizer=keras.optimizers.Adam(1e-4),
+        optimizer=keras.optimizers.Adam(0.1),
         loss=keras.losses.BinaryCrossentropy(),
         metrics=[metrics.BinaryAccuracy(), metrics.AUC(name="auc")],
     )

@@ -15,8 +15,8 @@ def plot_auc(history):
     plt.plot(history.history['auc'])
     plt.plot(history.history['val_auc'])
     plt.title('model auc')
-    plt.ylabel('true positive rate')
-    plt.xlabel('false positive rate')
+    plt.ylabel('auc')
+    plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper right')
     plt.savefig('auc.png')
 
