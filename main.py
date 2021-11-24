@@ -61,7 +61,7 @@ if __name__ == '__main__':
         epochs=1,
         verbose=1,
         callbacks=[keras.callbacks.ModelCheckpoint(
-            filepath=checkpoint_dir + "/ckpt-{epoch}.h5", save_freq="epoch"
+            filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"
         )]
     )
 
