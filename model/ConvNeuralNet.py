@@ -1,27 +1,30 @@
 from tensorflow import keras
+from tensorflow.keras import layers
+
+from model import Model
 
 
-class ConvNeuralNet(keras.Model):
+class ConvNeuralNet(Model):
 
     def __init__(self):
         super(ConvNeuralNet, self).__init__()
 
-        self.conv1 = keras.layers.Conv2D(16, (3, 3))
-        self.maxpool1 = keras.layers.MaxPooling2D(pool_size=(2, 2))
+        self.conv1 = layers.Conv2D(16, (3, 3))
+        self.maxpool1 = layers.MaxPooling2D(pool_size=(2, 2))
 
-        self.conv2 = keras.layers.Conv2D(32, (3, 3))
-        self.maxpool2 = keras.layers.MaxPooling2D(pool_size=(2, 2))
+        self.conv2 = layers.Conv2D(32, (3, 3))
+        self.maxpool2 = layers.MaxPooling2D(pool_size=(2, 2))
 
         self.conv3 = keras.layers.Conv2D(64, (3, 3))
         self.maxpool3 = keras.layers.MaxPooling2D(pool_size=(2, 2))
 
-        self.flatten = keras.layers.Flatten()
-        self.d1 = keras.layers.Dense(512, activation='relu')
-        self.d2 = keras.layers.Dense(64, activation='relu')
-        self.out = keras.layers.Dense(1, activation='sigmoid')
+        self.flatten = layers.Flatten()
+        self.d1 = layers.Dense(128, activation='relu')
+        self.d2 = layers.Dense(64, activation='relu')
+        self.out = layers.Dense(1, activation='sigmoid')
 
-        self.dropout = keras.layers.Dropout(0.2)
-        self.act = keras.layers.LeakyReLU(alpha=0.1)
+        self.dropout = layers.Dropout(0.2)
+        self.act = layers.LeakyReLU(alpha=0.1)
 
     def call(self, inputs):
         x = self.conv1(inputs)
@@ -46,3 +49,7 @@ class ConvNeuralNet(keras.Model):
 
         x = self.out(x)
         return x
+
+    def my_summary(self, input_shape):
+        x = layers.Input(shape=input_shape)
+        return keras.Model(inputs=x, outputs=self.call(x)).summary()

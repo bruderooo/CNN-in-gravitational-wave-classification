@@ -9,6 +9,7 @@ def plot_acc(history):
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
     plt.savefig('acc.png')
+    plt.clf()
 
 
 def plot_auc(history):
@@ -19,6 +20,7 @@ def plot_auc(history):
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper right')
     plt.savefig('auc.png')
+    plt.clf()
 
 
 def plot_loss(history):
@@ -29,3 +31,4 @@ def plot_loss(history):
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper right')
     plt.savefig('loss.png')
+    plt.clf()

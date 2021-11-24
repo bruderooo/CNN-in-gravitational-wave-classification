@@ -36,7 +36,7 @@ def make_or_restore_model():
 
 
 if __name__ == '__main__':
-    df = pd.read_csv('data_spectogram_one_signal/training_labels.csv', sep=',').sample(frac=1).set_index('id')
+    df = pd.read_csv('data_spectrogram/training_labels.csv', sep=',').sample(frac=1).set_index('id')
 
     *train, validation = np.split(df.index.values, 5)
     partition: dict = {'train': np.array(train).flatten(), 'validation': validation}
@@ -54,16 +54,17 @@ if __name__ == '__main__':
 
     model = make_or_restore_model()
 
-    model.build(input_shape=(None, *params['dim'], params['n_channels']))
-    model.summary()
+    # model.build(input_shape=(None, *params['dim'], params['n_channels']))
+    # model.summary()
+    model.my_summary((*params['dim'], params['n_channels']))
 
     history = model.fit(
         x=training_generator,
         validation_data=validation_generator,
-        epochs=50,
+        epochs=1,
         verbose=1,
         callbacks=[keras.callbacks.ModelCheckpoint(
-            filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"
+            filepath=checkpoint_dir + "/ckpt-{epoch}.h5", save_freq="epoch"
         )]
     )
 

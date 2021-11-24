@@ -63,7 +63,7 @@ class DataGenerator(keras.utils.Sequence):
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
             # x = np.load(f"data_spectrogram\\train\\{ID[0]}\\{ID[1]}\\{ID[2]}\\{ID}.npy")
-            # X[i,] = np.transpose((x - np.mean(x)) / np.max(x))
+            # X[i,] = self.__resize((x - np.mean(x)) / np.max(x))
 
             # To rozwiązanie dla nowego spectogramu
             x = np.load(f"data_spectogram_one_signal/train/{ID[0]}/{ID[1]}/{ID[2]}/{ID}.npy")
@@ -73,3 +73,7 @@ class DataGenerator(keras.utils.Sequence):
             y[i] = self.labels[ID]
 
         return X, y
+
+    def __resize(self, spect):
+        channel, x, y = spect.shape
+        return np.resize(spect, (x, y, channel))

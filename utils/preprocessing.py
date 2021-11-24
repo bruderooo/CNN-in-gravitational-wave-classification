@@ -6,6 +6,7 @@ from tqdm import tqdm
 
 
 def apply_qtransform_stacking(waves, transform):
+    waves = [wave / np.max(wave) for wave in waves]
     waves = np.hstack(waves)
     waves = torch.from_numpy(waves).float()
     waves = transform(waves)
@@ -24,17 +25,14 @@ def apply_qtransform_single(wave, transform):
 def spectrogram_casting(transform, record_id: str, part='train'):
     signals = np.load(f"..\\data\\{part}\\{record_id[0]}\\{record_id[1]}\\{record_id[2]}\\{record_id}.npy")
 
-    return apply_qtransform_single(signals[0], transform=transform)
+    return apply_qtransform_stacking(signals, transform=transform)
 
 
 def change_all_files(labels_csv, part='train'):
     df = pd.read_csv(labels_csv)
 
     # transform = CQT1992v2(sr=4096, fmin=20, fmax=2048, hop_length=64)
-    transform = CQT1992v2(
-        sr=4096, fmin=20, fmax=2048,
-        hop_length=64, bins_per_octave=14, pad_mode='constant'
-    )
+    transform = CQT1992v2(sr=2048, fmin=20, fmax=500, hop_length=64, verbose=False)
 
     for record_id in tqdm(df.id):
         tmp = spectrogram_casting(
