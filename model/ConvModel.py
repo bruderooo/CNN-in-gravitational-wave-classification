@@ -19,12 +19,12 @@ class ConvModel(keras.Model):
         self.hidden_layer1 = Dense(
             128,
             activation='relu',
-            kernel_regularizer=keras.regularizers.l2(1e-6)
+#            kernel_regularizer=keras.regularizers.l2(1e-6)
         )
         self.hidden_layer2 = Dense(
             64,
             activation='relu',
-            kernel_regularizer=keras.regularizers.l2(1e-6)
+#            kernel_regularizer=keras.regularizers.l2(1e-6)
         )
 
         self.output_layer = Dense(1, activation="sigmoid")

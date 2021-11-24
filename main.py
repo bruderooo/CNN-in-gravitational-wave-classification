@@ -26,9 +26,9 @@ def make_or_restore_model():
 
     print("Creating a new model")
 
-    model: keras.models.Model = ConvModel()
+    model: keras.models.Model = ConvNeuralNet()
     model.compile(
-        optimizer=keras.optimizers.Adam(0.1),
+        optimizer=keras.optimizers.Adam(0.0001),
         loss=keras.losses.BinaryCrossentropy(),
         metrics=[metrics.BinaryAccuracy(), metrics.AUC(name="auc")],
     )
