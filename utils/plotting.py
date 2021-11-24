@@ -32,3 +32,4 @@ def plot_loss(history):
     plt.legend(['train', 'val'], loc='upper right')
     plt.savefig('loss.png')
     plt.clf()
+    plt.clf()
