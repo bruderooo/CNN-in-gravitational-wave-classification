@@ -1,4 +1,5 @@
 from tensorflow import keras
+from tensorflow.keras import layers
 from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense, \
     Add, Dropout
 
@@ -7,17 +8,17 @@ class ResNet(keras.Model):
 
     def __init__(self):
         super(ResNet, self).__init__()
-        self.conv = Conv2D(64, (7, 7), padding='same')
+        self.conv = Conv2D(16, (7, 7), padding='same')
         self.bn = BatchNormalization()
-        self.act = Activation('relu')
+        self.act = layers.LeakyReLU(alpha=0.1)
         self.max_pool = MaxPool2D((3, 3))
 
-        self.id1a = IdentityBlock(64, (3, 3))
-        self.id1b = IdentityBlock(64, (3, 3))
+        self.id1a = IdentityBlock(16, (3, 3))
+        self.id1b = IdentityBlock(16, (3, 3))
 
-        self.bottleneck1 = BottleneckBlock(128, (3, 3))
-        self.id2a = IdentityBlock(128, (3, 3))
-        self.id2b = IdentityBlock(128, (3, 3))
+        self.bottleneck1 = BottleneckBlock(32, (3, 3))
+        self.id2a = IdentityBlock(32, (3, 3))
+        self.id2b = IdentityBlock(32, (3, 3))
 
         self.global_pool = GlobalAveragePooling2D()
         self.drop = Dropout(0.5)
@@ -74,7 +75,7 @@ class IdentityBlock(keras.layers.Layer):
         self.conv2 = Conv2D(filters, kernel_size, padding='same')
         self.bn2 = BatchNormalization()
 
-        self.act = Activation('relu')
+        self.act = layers.LeakyReLU(alpha=0.1)
         self.add = Add()
 
     def call(self, inputs):

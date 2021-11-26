@@ -26,7 +26,7 @@ def make_or_restore_model():
 
     print("Creating a new model")
 
-    model: keras.models.Model = ConvNeuralNet()
+    model: keras.models.Model = ResNet()
     model.compile(
         optimizer=keras.optimizers.Adam(0.0001),
         loss=keras.losses.BinaryCrossentropy(),
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     history = model.fit(
         x=training_generator,
         validation_data=validation_generator,
-        epochs=100,
+        epochs=250,
         verbose=1,
         callbacks=[keras.callbacks.ModelCheckpoint(
             filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"
