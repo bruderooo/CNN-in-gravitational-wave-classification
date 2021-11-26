@@ -20,10 +20,13 @@ class ConvNeuralNet(Model):
 
         self.flatten = layers.Flatten()
         self.d1 = layers.Dense(128, activation='relu')
+        self.drop1 = layers.Dropout(0.4)
+
         self.d2 = layers.Dense(64, activation='relu')
+        self.drop2 = layers.Dropout(0.3) 
+
         self.out = layers.Dense(1, activation='sigmoid')
 
-        self.dropout = layers.Dropout(0.2)
         self.act = layers.LeakyReLU(alpha=0.1)
 
     def call(self, inputs):
@@ -42,10 +45,10 @@ class ConvNeuralNet(Model):
         x = self.flatten(x)
 
         x = self.d1(x)
-        x = self.dropout(x)
+        x = self.drop1(x)
 
         x = self.d2(x)
-        x = self.dropout(x)
+        x = self.drop2(x)
 
         x = self.out(x)
         return x

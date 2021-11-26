@@ -58,7 +58,7 @@ if __name__ == '__main__':
     history = model.fit(
         x=training_generator,
         validation_data=validation_generator,
-        epochs=1,
+        epochs=100,
         verbose=1,
         callbacks=[keras.callbacks.ModelCheckpoint(
             filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"
