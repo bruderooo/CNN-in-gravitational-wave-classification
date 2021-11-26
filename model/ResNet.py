@@ -3,8 +3,10 @@ from tensorflow.keras import layers
 from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense, \
     Add, Dropout
 
+from model import Model
 
-class ResNet(keras.Model):
+
+class ResNet(Model):
 
     def __init__(self):
         super(ResNet, self).__init__()
@@ -64,7 +66,7 @@ class ResNet(keras.Model):
         return {}
 
 
-class IdentityBlock(keras.layers.Layer):
+class IdentityBlock(Model):
 
     def __init__(self, filters, kernel_size):
         super(IdentityBlock, self).__init__()
@@ -99,7 +101,7 @@ class IdentityBlock(keras.layers.Layer):
         }
 
 
-class BottleneckBlock(keras.layers.Layer):
+class BottleneckBlock(Model):
 
     def __init__(self, filters, kernel_size):
         super(BottleneckBlock, self).__init__()
