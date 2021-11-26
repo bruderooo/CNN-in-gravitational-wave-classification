@@ -56,3 +56,6 @@ class ConvNeuralNet(Model):
     def my_summary(self, input_shape):
         x = layers.Input(shape=input_shape)
         return keras.Model(inputs=x, outputs=self.call(x)).summary()
+
+    def get_config(self):
+        return super(ConvNeuralNet, self).get_config()
