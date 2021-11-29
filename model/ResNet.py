@@ -1,6 +1,5 @@
-from tensorflow import keras
 from tensorflow.keras import layers
-from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation, MaxPool2D, GlobalAveragePooling2D, Dense, \
+from tensorflow.keras.layers import Conv2D, Activation, MaxPool2D, GlobalAveragePooling2D, Dense, \
     Add, Dropout
 
 from model import Model
@@ -21,19 +20,15 @@ class ResNet(Model):
         self.id2a = IdentityBlock(32, (3, 3))
         self.id2b = IdentityBlock(32, (3, 3))
 
+        self.bottleneck2 = BottleneckBlock(64, (3, 3))
+        self.id3a = IdentityBlock(64, (3, 3))
+        self.id3b = IdentityBlock(64, (3, 3))
+
         self.global_pool = GlobalAveragePooling2D()
         self.drop = Dropout(0.2)
 
-        self.hidden_layer1 = Dense(
-            128,
-            activation='relu',
-            kernel_regularizer=keras.regularizers.l2(1e-6)
-        )
-        self.hidden_layer2 = Dense(
-            64,
-            activation='relu',
-            kernel_regularizer=keras.regularizers.l2(1e-6)
-        )
+        self.hidden_layer1 = Dense(128, activation='relu')
+        self.hidden_layer2 = Dense(64, activation='relu')
 
         self.classifier = Dense(1, activation='sigmoid')
 
@@ -49,6 +44,10 @@ class ResNet(Model):
         x = self.id2a(x)
         x = self.id2b(x)
 
+        x = self.bottleneck2(x)
+        x = self.id3a(x)
+        x = self.id3b(x)
+
         x = self.global_pool(x)
 
         x = self.hidden_layer1(x)
@@ -61,7 +60,7 @@ class ResNet(Model):
         return x
 
     def get_config(self):
-        return {}
+        return super(ResNet, self).get_config()
 
 
 class IdentityBlock(Model):
@@ -88,10 +87,12 @@ class IdentityBlock(Model):
         return x
 
     def get_config(self):
-        return {
+        config = super(IdentityBlock, self).get_config()
+        config.update({
             'filters': self.conv1.filters,
             'kernel_size': self.conv1.kernel_size
-        }
+        })
+        return config
 
 
 class BottleneckBlock(Model):
@@ -120,7 +121,9 @@ class BottleneckBlock(Model):
         return x
 
     def get_config(self):
-        return {
+        config = super(BottleneckBlock, self).get_config()
+        config.update({
             'filters': self.conv1.filters,
             'kernel_size': self.conv1.kernel_size
-        }
+        })
+        return config
