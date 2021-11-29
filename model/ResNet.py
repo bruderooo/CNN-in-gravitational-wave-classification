@@ -11,7 +11,6 @@ class ResNet(Model):
     def __init__(self):
         super(ResNet, self).__init__()
         self.conv = Conv2D(16, (7, 7), padding='same')
-        self.bn = BatchNormalization()
         self.act = layers.LeakyReLU(alpha=0.1)
         self.max_pool = MaxPool2D((3, 3))
 
@@ -23,7 +22,7 @@ class ResNet(Model):
         self.id2b = IdentityBlock(32, (3, 3))
 
         self.global_pool = GlobalAveragePooling2D()
-        self.drop = Dropout(0.5)
+        self.drop = Dropout(0.2)
 
         self.hidden_layer1 = Dense(
             128,
@@ -40,7 +39,6 @@ class ResNet(Model):
 
     def call(self, inputs):
         x = self.conv(inputs)
-        x = self.bn(x)
         x = self.act(x)
         x = self.max_pool(x)
 
@@ -72,21 +70,16 @@ class IdentityBlock(Model):
         super(IdentityBlock, self).__init__()
 
         self.conv1 = Conv2D(filters, kernel_size, padding='same')
-        self.bn1 = BatchNormalization()
-
         self.conv2 = Conv2D(filters, kernel_size, padding='same')
-        self.bn2 = BatchNormalization()
 
         self.act = layers.LeakyReLU(alpha=0.1)
         self.add = Add()
 
     def call(self, inputs):
         x = self.conv1(inputs)
-        x = self.bn1(x)
         x = self.act(x)
 
         x = self.conv2(x)
-        x = self.bn2(x)
         x = self.act(x)
 
         x = self.add([x, inputs])
@@ -107,10 +100,7 @@ class BottleneckBlock(Model):
         super(BottleneckBlock, self).__init__()
 
         self.conv1 = Conv2D(filters, kernel_size, padding='same')
-        self.bn1 = BatchNormalization()
-
         self.conv2 = Conv2D(filters, kernel_size, padding='same')
-        self.bn2 = BatchNormalization()
 
         self.conv_add = Conv2D(filters, (1, 1), padding='same')
 
@@ -119,11 +109,9 @@ class BottleneckBlock(Model):
 
     def call(self, inputs):
         x = self.conv1(inputs)
-        x = self.bn1(x)
         x = self.act(x)
 
         x = self.conv2(x)
-        x = self.bn2(x)
         x = self.act(x)
 
         x = self.add([x, self.conv_add(inputs)])
