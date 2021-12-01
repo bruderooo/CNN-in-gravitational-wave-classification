@@ -9,13 +9,13 @@ class ConvNeuralNet(Model):
     def __init__(self):
         super(ConvNeuralNet, self).__init__()
 
-        self.conv1 = layers.Conv2D(16, (3, 3))
+        self.conv1 = layers.Conv2D(16, (3, 3), padding='same')
         self.maxpool1 = layers.MaxPooling2D(pool_size=(2, 2))
 
-        self.conv2 = layers.Conv2D(32, (3, 3))
+        self.conv2 = layers.Conv2D(32, (3, 3), padding='same')
         self.maxpool2 = layers.MaxPooling2D(pool_size=(2, 2))
 
-        self.conv3 = keras.layers.Conv2D(64, (3, 3))
+        self.conv3 = keras.layers.Conv2D(64, (3, 3), padding='same')
         self.maxpool3 = keras.layers.MaxPooling2D(pool_size=(2, 2))
 
         self.flatten = layers.Flatten()

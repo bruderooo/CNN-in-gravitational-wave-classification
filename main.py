@@ -6,7 +6,7 @@ from tensorflow import keras
 from tensorflow.keras import metrics
 
 from generators import DataGenerator
-from model import *
+from model import ConvNeuralNet
 from utils import plot_acc, plot_loss, plot_auc
 
 checkpoint_dir = "./ckpt"
@@ -26,7 +26,7 @@ def make_or_restore_model():
 
     print("Creating a new model")
 
-    model: keras.models.Model = ConvModelColumns()
+    model: keras.models.Model = ConvNeuralNet()
     model.compile(
         optimizer=keras.optimizers.Adam(0.0001),
         loss=keras.losses.BinaryCrossentropy(),
