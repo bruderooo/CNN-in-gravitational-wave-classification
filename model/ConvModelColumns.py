@@ -4,13 +4,16 @@ from tensorflow.keras import layers
 from model import Model
 
 
-class ConvNeuralNet(Model):
+class ConvModelColumns(Model):
 
     def __init__(self):
-        super(ConvNeuralNet, self).__init__()
+        super(ConvModelColumns, self).__init__()
 
-        self.conv1 = layers.Conv2D(16, (3, 3))
-        self.maxpool1 = layers.MaxPooling2D(pool_size=(2, 2))
+        self.conv1a = layers.Conv2D(16, (1, 3))
+        self.maxpool1a = layers.MaxPooling2D(pool_size=(2, 2))
+
+        self.conv1b = layers.Conv2D(16, (3, 1))
+        self.maxpool1b = layers.MaxPooling2D(pool_size=(2, 2))
 
         self.conv2 = layers.Conv2D(32, (3, 3))
         self.maxpool2 = layers.MaxPooling2D(pool_size=(2, 2))
@@ -23,16 +26,22 @@ class ConvNeuralNet(Model):
         self.drop1 = layers.Dropout(0.4)
 
         self.d2 = layers.Dense(64, activation='relu')
-        self.drop2 = layers.Dropout(0.3) 
+        self.drop2 = layers.Dropout(0.3)
 
         self.out = layers.Dense(1, activation='sigmoid')
 
         self.act = layers.LeakyReLU(alpha=0.1)
 
     def call(self, inputs):
-        x = self.conv1(inputs)
+        x = self.conv1a(inputs)
         x = self.act(x)
-        x = self.maxpool1(x)
+        x = self.maxpool1a(x)
+
+        x = self.conv1b(x)
+        x = self.act(x)
+        x = self.maxpool1b(x)
+
+        x = keras.layers.concatenate([x, inputs])
 
         x = self.conv2(x)
         x = self.act(x)
@@ -54,4 +63,4 @@ class ConvNeuralNet(Model):
         return x
 
     def get_config(self):
-        return super(ConvNeuralNet, self).get_config()
+        return super(ConvModelColumns, self).get_config()

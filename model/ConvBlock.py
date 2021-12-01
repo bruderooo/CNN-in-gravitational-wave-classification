@@ -19,7 +19,9 @@ class ConvBlock(keras.Model):
         return x
 
     def get_config(self):
-        return {
+        config = super(ConvBlock, self).get_config()
+        config.update({
             'filters': self.conv.filters,
             'kernel_size': self.conv.kernel_size
-        }
+        })
+        return config

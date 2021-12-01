@@ -16,20 +16,12 @@ class ConvModel(keras.Model):
 
         self.flatten = GlobalAveragePooling2D()
 
-        self.hidden_layer1 = Dense(
-            128,
-            activation='relu',
-#            kernel_regularizer=keras.regularizers.l2(1e-6)
-        )
-        self.hidden_layer2 = Dense(
-            64,
-            activation='relu',
-#            kernel_regularizer=keras.regularizers.l2(1e-6)
-        )
+        self.hidden_layer1 = Dense(128, activation='relu')
+        self.hidden_layer2 = Dense(64, activation='relu')
 
         self.output_layer = Dense(1, activation="sigmoid")
 
-        self.drop = Dropout(0.5)
+        self.drop = Dropout(0.2)
 
     def call(self, inputs):
         x = self.conv1(inputs)
@@ -49,4 +41,4 @@ class ConvModel(keras.Model):
         return x
 
     def get_config(self):
-        return {}
+        return super(ConvModel, self).get_config()
