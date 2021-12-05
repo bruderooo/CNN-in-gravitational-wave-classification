@@ -13,11 +13,10 @@ def plot_acc(history):
 
 
 def plot_auc(history):
-    plt.plot(history.history['auc'])
-    plt.plot(history.history['val_auc'])
-    plt.title('model auc')
-    plt.ylabel('auc')
-    plt.xlabel('epoch')
+    plt.plot(history.history['recall'], history.history['precision'])
+    plt.plot(history.history['val_recall'], history.history['val_precision'])
+    plt.ylabel('precision')
+    plt.xlabel('recall')
     plt.legend(['train', 'val'], loc='upper right')
     plt.savefig('auc.png')
     plt.clf()

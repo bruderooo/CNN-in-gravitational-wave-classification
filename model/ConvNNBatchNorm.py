@@ -4,18 +4,21 @@ from tensorflow.keras import layers
 from model import Model
 
 
-class ConvNeuralNet(Model):
+class ConvNNBatchNorm(Model):
 
     def __init__(self):
-        super(ConvNeuralNet, self).__init__()
+        super(ConvNNBatchNorm, self).__init__()
 
         self.conv1 = layers.Conv2D(16, (3, 3), padding='same')
+        self.batch1 = layers.BatchNormalization()
         self.maxpool1 = layers.MaxPooling2D(pool_size=(2, 2))
 
         self.conv2 = layers.Conv2D(32, (3, 3), padding='same')
+        self.batch2 = layers.BatchNormalization()
         self.maxpool2 = layers.MaxPooling2D(pool_size=(2, 2))
 
         self.conv3 = keras.layers.Conv2D(64, (3, 3), padding='same')
+        self.batch3 = layers.BatchNormalization()
         self.maxpool3 = keras.layers.MaxPooling2D(pool_size=(2, 2))
 
 #        self.flatten = layers.GlobalAveragePooling2D()
@@ -32,14 +35,17 @@ class ConvNeuralNet(Model):
 
     def call(self, inputs):
         x = self.conv1(inputs)
+        x = self.batch1(x)
         x = self.act(x)
         x = self.maxpool1(x)
 
         x = self.conv2(x)
+        x = self.batch2(x)
         x = self.act(x)
         x = self.maxpool2(x)
 
         x = self.conv3(x)
+        x = self.batch3(x)
         x = self.act(x)
         x = self.maxpool3(x)
 
@@ -55,4 +61,4 @@ class ConvNeuralNet(Model):
         return x
 
     def get_config(self):
-        return super(ConvNeuralNet, self).get_config()
+        return super(ConvNNBatchNorm, self).get_config()
