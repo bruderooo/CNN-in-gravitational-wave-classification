@@ -19,6 +19,10 @@ class ResNet(Model):
         self.bottleneck1 = BottleneckBlock(32, (3, 3))
         self.id2a = IdentityBlock(32, (3, 3))
         self.id2b = IdentityBlock(32, (3, 3))
+        
+        self.bottleneck2 = BottleneckBlock(64, (3, 3))
+        self.id3a = IdentityBlock(64, (3, 3))
+        self.id3b = IdentityBlock(64, (3, 3))
 
         self.global_pool = GlobalAveragePooling2D()
         self.drop = Dropout(0.2)
@@ -39,6 +43,10 @@ class ResNet(Model):
         x = self.bottleneck1(x)
         x = self.id2a(x)
         x = self.id2b(x)
+        
+        x = self.bottleneck2(x)
+        x = self.id3a(x)
+        x = self.id3b(x)
 
         x = self.global_pool(x)
 

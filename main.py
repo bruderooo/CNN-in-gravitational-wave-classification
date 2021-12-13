@@ -6,7 +6,7 @@ from tensorflow import keras
 from tensorflow.keras import metrics
 
 from generators import DataGenerator
-from model import ConvNeuralNet, ConvNNBatchNorm
+from model import ConvNeuralNet, ResNet
 from utils import plot_acc, plot_loss, plot_auc
 
 checkpoint_dir = "./ckpt"
@@ -26,9 +26,9 @@ def make_or_restore_model():
 
     print("Creating a new model")
 
-    model: keras.models.Model = ConvNNBatchNorm()
+    model: keras.models.Model = ResNet()
     model.compile(
-        optimizer=keras.optimizers.Adam(0.001),
+        optimizer=keras.optimizers.Adam(0.0001),
         loss=keras.losses.BinaryCrossentropy(from_logits=True),
         metrics=[metrics.BinaryAccuracy(), metrics.Precision(), metrics.Recall()],
     )
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     history = model.fit(
         x=training_generator,
         validation_data=validation_generator,
-        epochs=100,
+        epochs=150,
         verbose=1,
         callbacks=[keras.callbacks.ModelCheckpoint(
             filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"
