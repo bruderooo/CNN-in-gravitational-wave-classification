@@ -18,7 +18,6 @@ class ConvNeuralNet(Model):
         self.conv3 = keras.layers.Conv2D(64, (3, 3), padding='same')
         self.maxpool3 = keras.layers.MaxPooling2D(pool_size=(2, 2))
 
-#        self.flatten = layers.GlobalAveragePooling2D()
         self.flatten = layers.Flatten()
         self.d1 = layers.Dense(128, activation='relu')
         self.drop1 = layers.Dropout(0.4)

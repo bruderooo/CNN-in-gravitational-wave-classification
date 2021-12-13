@@ -4,17 +4,17 @@ import numpy as np
 import pandas as pd
 from tensorflow import keras
 from tensorflow.keras import metrics
+from tensorflow.keras.callbacks import CSVLogger, ModelCheckpoint
 
 from generators import DataGenerator
-from model import ConvNeuralNet, ResNet
-from utils import plot_acc, plot_loss, plot_auc
+from model import ResNet
 
 checkpoint_dir = "./ckpt"
 if not os.path.exists(checkpoint_dir):
     os.makedirs(checkpoint_dir)
 
 
-def make_or_restore_model():
+def make_or_restore_model(params):
     # Either restore the latest model, or create a fresh one
     # if there is no checkpoint available.
     checkpoints = [checkpoint_dir + "/" + name for name in os.listdir(checkpoint_dir)]
@@ -32,6 +32,9 @@ def make_or_restore_model():
         loss=keras.losses.BinaryCrossentropy(from_logits=True),
         metrics=[metrics.BinaryAccuracy(), metrics.Precision(), metrics.Recall()],
     )
+
+    model.my_summary((*params['dim'], params['n_channels']))
+
     return model
 
 
@@ -52,19 +55,15 @@ if __name__ == '__main__':
     training_generator = DataGenerator(partition['train'], labels, **params)
     validation_generator = DataGenerator(partition['validation'], labels, **params)
 
-    model = make_or_restore_model()
-    model.my_summary((*params['dim'], params['n_channels']))
+    model = make_or_restore_model(params)
 
     history = model.fit(
         x=training_generator,
         validation_data=validation_generator,
-        epochs=150,
+        epochs=200,
         verbose=1,
-        callbacks=[keras.callbacks.ModelCheckpoint(
-            filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"
-        )]
+        callbacks=[
+            ModelCheckpoint(filepath=checkpoint_dir + "/ckpt-{epoch}", save_freq="epoch"),
+            CSVLogger(filename="log.csv", separator=',', append=True)
+        ]
     )
-
-    plot_acc(history)
-    plot_loss(history)
-    plot_auc(history)

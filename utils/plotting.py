@@ -1,3 +1,7 @@
+import csv
+from collections import defaultdict
+
+import tensorflow as tf
 from matplotlib import pyplot as plt
 
 
@@ -32,3 +36,25 @@ def plot_loss(history):
     plt.savefig('loss.png')
     plt.clf()
     plt.clf()
+
+
+def plotting_file(checkpoint_path):
+    with open(f"{checkpoint_path}/log.csv", 'r') as csvfile:
+        file = csv.reader(csvfile, delimiter=',')
+        history = defaultdict(list)
+        keys = next(file)
+
+        for row in file:
+            for key, el in zip(keys, row):
+                history[key].append(float(el))
+
+        return dict(history)
+
+
+if __name__ == '__main__':
+    history = tf.keras.callbacks.History()
+    history.history = plotting_file('..')
+
+    plot_acc(history)
+    plot_loss(history)
+    plot_auc(history)
