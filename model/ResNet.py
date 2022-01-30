@@ -16,11 +16,11 @@ class ResNet(Model):
         self.id1a = IdentityBlock(16, (3, 3))
         self.id1b = IdentityBlock(16, (3, 3))
 
-        self.bottleneck1 = BottleneckBlock(32, (3, 3))
+        self.bottleneck1 = UpsamplingBlock(32, (3, 3))
         self.id2a = IdentityBlock(32, (3, 3))
         self.id2b = IdentityBlock(32, (3, 3))
-        
-        self.bottleneck2 = BottleneckBlock(64, (3, 3))
+
+        self.bottleneck2 = UpsamplingBlock(64, (3, 3))
         self.id3a = IdentityBlock(64, (3, 3))
         self.id3b = IdentityBlock(64, (3, 3))
 
@@ -95,10 +95,10 @@ class IdentityBlock(Model):
         return config
 
 
-class BottleneckBlock(Model):
+class UpsamplingBlock(Model):
 
     def __init__(self, filters, kernel_size):
-        super(BottleneckBlock, self).__init__()
+        super(UpsamplingBlock, self).__init__()
 
         self.conv1 = Conv2D(filters, kernel_size, padding='same')
         self.conv2 = Conv2D(filters, kernel_size, padding='same')
@@ -121,7 +121,7 @@ class BottleneckBlock(Model):
         return x
 
     def get_config(self):
-        config = super(BottleneckBlock, self).get_config()
+        config = super(UpsamplingBlock, self).get_config()
         config.update({
             'filters': self.conv1.filters,
             'kernel_size': self.conv1.kernel_size

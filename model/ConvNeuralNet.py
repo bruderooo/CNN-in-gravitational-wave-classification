@@ -1,4 +1,3 @@
-from tensorflow import keras
 from tensorflow.keras import layers
 
 from model import Model
@@ -15,8 +14,8 @@ class ConvNeuralNet(Model):
         self.conv2 = layers.Conv2D(32, (3, 3), padding='same')
         self.maxpool2 = layers.MaxPooling2D(pool_size=(2, 2))
 
-        self.conv3 = keras.layers.Conv2D(64, (3, 3), padding='same')
-        self.maxpool3 = keras.layers.MaxPooling2D(pool_size=(2, 2))
+        self.conv3 = layers.Conv2D(64, (3, 3), padding='same')
+        self.maxpool3 = layers.MaxPooling2D(pool_size=(2, 2))
 
         self.flatten = layers.Flatten()
 
